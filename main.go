@@ -8,7 +8,7 @@ import (
 // todo 增加summary功能
 
 func main() {
-	file := "file.txt"
+	file := os.Args[1]
 	f, err := os.Open(file)
 	if err != nil {
 		panic(err)

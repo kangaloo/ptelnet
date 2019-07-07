@@ -127,7 +127,6 @@ func (s *summary) finish() {
 }
 
 func NewHost(info string) (*Host, error) {
-	log.Printf("%s\n", info)
 	i := strings.Split(info, ":")
 	ports := parsePorts(i[1])
 	host := &Host{
