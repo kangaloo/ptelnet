@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "github.com/kangaloo/ptelnet/logger"
 	"github.com/kangaloo/ptelnet/portscheck"
 	"os"
 )
