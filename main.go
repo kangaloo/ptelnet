@@ -6,8 +6,7 @@ import (
 	"os"
 )
 
-// todo 增加summary功能
-
+// todo 使用 github.com/urfave/cli 作为命令行参数库
 func main() {
 	file := os.Args[1]
 	f, err := os.Open(file)
