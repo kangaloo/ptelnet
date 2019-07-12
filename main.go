@@ -1,23 +1,25 @@
 package main
 
 import (
+	"github.com/kangaloo/ptelnet/cli/action"
+	"github.com/kangaloo/ptelnet/cli/flag"
 	_ "github.com/kangaloo/ptelnet/logger"
-	"github.com/kangaloo/ptelnet/portscheck"
+	"github.com/urfave/cli"
+	"log"
 	"os"
 )
 
-// todo 使用 github.com/urfave/cli 作为命令行参数库
 func main() {
-	file := os.Args[1]
-	f, err := os.Open(file)
-	if err != nil {
-		panic(err)
-	}
+	app := cli.NewApp()
+	app.Version = "1.0.0"
+	app.Name = "ptelnet"
+	app.Author = "Li Xiangyang"
+	app.Email = "lixy4@belink.com"
+	app.Usage = "A parallel telnet cli application"
+	app.Flags = flag.GlobalFlags
+	app.Action = action.Action
 
-	hosts, err := portscheck.NewHosts(f)
-	if err != nil {
-		panic(err)
+	if err := app.Run(os.Args); err != nil {
+		log.Fatalln(err)
 	}
-
-	hosts.Check()
 }

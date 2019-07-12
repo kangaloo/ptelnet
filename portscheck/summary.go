@@ -53,13 +53,13 @@ func (s *summary) showSummary() {
 	fmt.Println(color.YellowString("Host: %s", s.addr))
 	fmt.Println(color.GreenString("--------successful--------"))
 	for _, port := range s.successful {
-		fmt.Printf("%s, ", port)
+		fmt.Printf("%s %s %s\n", s.addr, port, color.GreenString("LISTEN"))
 	}
 	fmt.Println()
 
 	fmt.Println(color.RedString("----------failed----------"))
 	for _, port := range s.failed {
-		fmt.Printf("%s, ", port)
+		fmt.Printf("%s %s %s\n", s.addr, port, color.RedString("FAILED"))
 	}
 	fmt.Println()
 	fmt.Println()
