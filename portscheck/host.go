@@ -2,6 +2,8 @@ package portscheck
 
 import (
 	"bufio"
+	"fmt"
+	log "github.com/sirupsen/logrus"
 	"io"
 	"os"
 	"strconv"
@@ -112,4 +114,12 @@ func (h *Host) portsCheck() error {
 
 func (h *Host) showSummary() {
 	h.summary.showSummary()
+
+	f, ok := log.StandardLogger().Out.(*os.File)
+	if !ok {
+		return
+	}
+
+	file := f.Name()
+	fmt.Printf("see details in file %s\n", file)
 }
