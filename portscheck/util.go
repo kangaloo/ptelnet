@@ -37,10 +37,10 @@ func parsePorts(portsString string) []string {
 	return ports
 }
 
-func connect(addr string, gw *sync.WaitGroup, sum *summary) {
+func connect(addr string, gw *sync.WaitGroup, sum *summary, timeout int) {
 	defer gw.Done()
 	now := time.Now()
-	conn, err := net.DialTimeout("tcp", addr, time.Second*10)
+	conn, err := net.DialTimeout("tcp", addr, time.Second*time.Duration(timeout))
 	if err != nil {
 		log.WithField("reason", err.Error()).Warnf("connect to %s failed after %v", addr, time.Since(now))
 		sum.chanFailed <- strings.Split(addr, ":")[1]

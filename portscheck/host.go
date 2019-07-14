@@ -15,7 +15,7 @@ type Hosts struct {
 	hosts []*Host
 }
 
-func NewHosts(f *os.File) (*Hosts, error) {
+func NewHosts(f io.ReadCloser) (*Hosts, error) {
 	defer f.Close()
 	var hosts []*Host
 	reader := bufio.NewReader(f)
@@ -46,9 +46,9 @@ func NewHosts(f *os.File) (*Hosts, error) {
 }
 
 // collect summary
-func (hs *Hosts) Check() {
+func (hs *Hosts) Check(timeout int) {
 	for _, host := range hs.hosts {
-		host.PortsConnectTest()
+		host.PortsConnectTest(timeout)
 		host.showSummary()
 	}
 }
@@ -84,14 +84,14 @@ func NewHost(info string) (*Host, error) {
 
 // PortsTest
 // report summary
-func (h *Host) PortsConnectTest() {
+func (h *Host) PortsConnectTest(timeout int) {
 	// start count goroutine
 	h.sumWg.Add(1)
 	go h.summary.Start(h.sumWg)
 
 	for _, port := range h.ports {
 		h.wg.Add(1)
-		go connect(h.addr+":"+port, h.wg, h.summary)
+		go connect(h.addr+":"+port, h.wg, h.summary, timeout)
 	}
 
 	h.wg.Wait()

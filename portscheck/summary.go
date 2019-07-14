@@ -6,6 +6,9 @@ import (
 	"sync"
 )
 
+// todo 现在的summary改成Result
+//  summary输出总过测试多少，成功多少，失败多少，耗时多少(每个host耗时，所有host耗时)
+
 type summary struct {
 	sync.WaitGroup
 	addr           string

@@ -5,41 +5,52 @@ import (
 	"github.com/kangaloo/ptelnet/portscheck"
 	"github.com/kangaloo/ptelnet/util"
 	"github.com/urfave/cli"
+	"io"
+	"io/ioutil"
 	"os"
+	"strings"
 )
 
 func Action(c *cli.Context) error {
-	if !c.IsSet("f") {
+
+	if c.IsSet("f") && c.IsSet("e") {
+		return errors.New("can not use '-f' and '-e' flags at the same time")
+	}
+
+	if !c.IsSet("f") && !c.IsSet("e") {
 		return cli.ShowAppHelp(c)
 	}
 
-	file := c.String("f")
+	var reader io.ReadCloser
 
-	if !util.IsExist(file) {
-		return errors.New("file not exist")
+	if c.IsSet("f") {
+		file := c.String("f")
+
+		if !util.IsExist(file) {
+			return errors.New("file not exist")
+		}
+
+		if !util.IsFile(file) {
+			return errors.New("not a file")
+		}
+
+		f, err := os.Open(file)
+		if err != nil {
+			return err
+		}
+		reader = f
+	} else {
+		r := strings.NewReader(c.String("e"))
+		rc := ioutil.NopCloser(r)
+		reader = rc
 	}
 
-	if !util.IsFile(file) {
-		return errors.New("not a file")
-	}
-
-	f, err := os.Open(file)
+	hosts, err := portscheck.NewHosts(reader)
 	if err != nil {
 		return err
 	}
 
-	fi, err := f.Stat()
-	if err != nil {
-		return err
-	}
-
-	fi.IsDir()
-
-	hosts, err := portscheck.NewHosts(f)
-	if err != nil {
-		return err
-	}
-
-	hosts.Check()
+	// todo 将timeout参数放到Host结构里
+	hosts.Check(c.Int("t"))
 	return nil
 }
